@@ -29,6 +29,8 @@ public class Trie
 
     }
 
+    //Возвращает индекс найденного узла, если узла с введённым префиксом
+    //не существует, то возвращает единицу
     public int find(String s)
     {
         TrieNode node = root;
@@ -70,27 +72,60 @@ public class Trie
             arrayString[j] = randString.toString();
 
         }
+       // Arrays.sort(arrayString);
 
-        Arrays.sort(arrayString);
+        //Генератор long-ов
+        Random random = new Random();
 
-        String wordToFind = arrayString[98100];
-        System.out.println(wordToFind);
+        long[] arrayLong = new long[100000];
 
-
-
-        for (int i = 0; i < arrayString.length; i++)
+        for (int i = 0; i < arrayLong.length; i++)
         {
-            trie.put(arrayString[i], i);
+            arrayLong[i] = random.nextLong();
         }
+
+        String[][] newArray = new String[100000][2];
+
+
+        for (int i = 0; i < newArray.length; i++)
+        {
+            newArray[i][0] = arrayString[i];
+            newArray[i][1] = Long.toString(arrayLong[i]);
+        }
+
+        //Сортирую данные по первому столбцу (по имени класса)
+        Arrays.sort(newArray, (a, b) -> a[0].compareTo(b[0]));
+
+
+        //Заполняю дерево
+        for (int i = 0; i < newArray.length; i++)
+        {
+            trie.put(newArray[i][0], i);
+
+        }
+
+
+
+        for (int i = 0; i < 13; i++)
+        {
+            System.out.println(i + " " + newArray[i][0] + " -> " + newArray[i][1]);
+        }
+
+
+
+        Scanner in = new Scanner(System.in);
+        System.out.println("Нужно ввести префикс: ");
+        String wordToFind = in.nextLine();
 
         long date1 =   System.currentTimeMillis();
         int index = trie.find(wordToFind);
         long date2 = System.currentTimeMillis();
 
-
         System.out.println("index = " + index);
-        System.out.println("проверка -> вот слово под найденным индексом: " + arrayString[index]);
+        System.out.println("проверка -> вот слово под найденным индексом: " + newArray[index][0] + " -> " + newArray[index][1]);
         System.out.println("Время поиска: " + (date2 - date1));
+
+
 
 
     }
