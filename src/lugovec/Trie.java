@@ -1,3 +1,5 @@
+package lugovec;
+
 import java.util.*;
 
 public class Trie
@@ -5,6 +7,7 @@ public class Trie
     static class TrieNode
     {
         int index;
+        Character ch;
         Map<Character, TrieNode> children = new TreeMap<Character, TrieNode>();
         boolean leaf;
     }
@@ -19,6 +22,7 @@ public class Trie
             if (!node.children.containsKey(ch))
             {
                 TrieNode newNode = new TrieNode();
+                node.ch = ch;
                 newNode.index = index;
                 node.children.put(ch, newNode);
             }
@@ -46,7 +50,24 @@ public class Trie
         return node.index;
     }
 
-    // Usage example
+    public int findSecondIndex(String s)
+    {
+        TrieNode node = root;
+        for (char ch : s.toLowerCase().toCharArray())
+        {
+            node = node.children.get(ch);
+        }
+
+        while (node.ch != null)
+        {
+            node = node.children.get(node.ch);
+        }
+
+        return node.index;
+
+    }
+
+
     public static void main(String[] args) {
         Trie trie = new Trie();
 
@@ -117,13 +138,24 @@ public class Trie
         System.out.println("Нужно ввести префикс: ");
         String wordToFind = in.nextLine();
 
-        long date1 =   System.currentTimeMillis();
+        //long date1 =   System.currentTimeMillis();
         int index = trie.find(wordToFind);
-        long date2 = System.currentTimeMillis();
-
+        //long date2 = System.currentTimeMillis();
         System.out.println("index = " + index);
         System.out.println("проверка -> вот слово под найденным индексом: " + newArray[index][0] + " -> " + newArray[index][1]);
-        System.out.println("Время поиска: " + (date2 - date1));
+
+
+        System.out.println("Теперь поищем последний индекс, где встречается эта строка : ");
+        Scanner ine = new Scanner(System.in);
+        System.out.println("Нужно ввести префикс: ");
+        String wordToFinde = in.nextLine();
+        int lastIndex = trie.findSecondIndex(wordToFinde);
+        System.out.println("lastIndex = " + lastIndex);
+        System.out.println(lastIndex + 1 + " " + newArray[lastIndex + 1][0] + "    " + newArray[lastIndex + 1][1]);
+        System.out.println(lastIndex  + " " + newArray[lastIndex][0] + "    " + newArray[lastIndex][1]);
+
+
+        //System.out.println("Время поиска: " + (date2 - date1));
 
 
 
