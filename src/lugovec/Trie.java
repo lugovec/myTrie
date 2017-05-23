@@ -9,7 +9,7 @@ public class Trie
         int index;
         Character ch;
         Map<Character, TrieNode> children = new TreeMap<Character, TrieNode>();
-        boolean leaf;
+
     }
 
     TrieNode root = new TrieNode();
@@ -19,6 +19,9 @@ public class Trie
         TrieNode node = root;
         for (char ch : string.toLowerCase().toCharArray())
         {
+
+
+
             if (!node.children.containsKey(ch))
             {
                 TrieNode newNode = new TrieNode();
@@ -27,18 +30,15 @@ public class Trie
                 node.children.put(ch, newNode);
             }
             node = node.children.get(ch);
-
         }
-        node.leaf = true;
-
     }
 
-    //Возвращает индекс найденного узла, если узла с введённым префиксом
-    //не существует, то возвращает единицу
-    public int find(String s)
+    //Возвращает индекс первой строки, начинающейся со start
+    //Если такой строки не существует, то возвращает -1
+    public int find(String start)
     {
         TrieNode node = root;
-        for (char ch : s.toLowerCase().toCharArray())
+        for (char ch : start.toLowerCase().toCharArray())
         {
             if (!node.children.containsKey(ch))
                 return -1;
@@ -50,10 +50,11 @@ public class Trie
         return node.index;
     }
 
-    public int findSecondIndex(String s)
+    //Возвращает индекс последней строки, начинающейся на start
+    public int findSecondIndex(String start)
     {
         TrieNode node = root;
-        for (char ch : s.toLowerCase().toCharArray())
+        for (char ch : start.toLowerCase().toCharArray())
         {
             node = node.children.get(ch);
         }
@@ -64,7 +65,6 @@ public class Trie
         }
 
         return node.index;
-
     }
 
 

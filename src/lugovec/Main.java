@@ -7,11 +7,9 @@ import java.util.Scanner;
 
 public class Main implements ISearcher
 {
-
     Trie trie = new Trie();
 
-    String[][] array;
-
+    String[][] array;//массив, отсортированный по имени класса
 
     @Override
     public void refresh(String[] classNames, long[] modificationDates)
@@ -30,11 +28,14 @@ public class Main implements ISearcher
 
         array = newArray;
 
-        //Заполняю дерево
-        for (int i = 0; i < newArray.length; i++)
-        {
-            trie.put(newArray[i][0], i);
 
+
+
+
+        //Заполняю дерево
+        for (int i = 0; i < array.length; i++)
+        {
+            trie.put(array[i][0], i);
         }
 
     }
@@ -45,19 +46,11 @@ public class Main implements ISearcher
         int secondIndex;
         int firstIndex = trie.find(start);
 
-        System.out.println("firstIndex = " + firstIndex);
-
         if (firstIndex != -1)
         {
-            secondIndex = trie.findSecondIndex(start);
+            secondIndex = trie.findSecondIndex(start);//Индекс последней строки, начинающейся со start
 
-            System.out.println("secondIndex = " + secondIndex);
-
-
-            String[][] arr = new String[(secondIndex - firstIndex) + 1][2];
-
-            System.out.println("arr size = " + arr.length);
-
+            String[][] arr = new String[(secondIndex - firstIndex) + 1][2];//массив, содержащий все строки, начинающиеся со start
 
             for (int i = 0; i < arr.length; i++)
             {
@@ -68,50 +61,33 @@ public class Main implements ISearcher
             }
 
             //Сортирую выбранные записи по дате
-            Arrays.sort(arr, (a, b) -> a[1].compareTo(b[1]));
+            Arrays.sort(arr, (a, b) -> Long.valueOf(a[1]).compareTo(Long.valueOf(b[1])));
 
-            if (arr.length >= 12)
+            int arrLength = 12;
+            if (arr.length < 12)
             {
-                String[] resultArray = new String[12];
-
-                for (int i = 0; i < 12; i++)
-                {
-                    resultArray[i] = arr[i][0];
-                }
-
-                //тестирую
-                for (int i = 0; i < 12; i++)
-                {
-                    System.out.println(arr[i][0] + " -> " + arr[i][1]);
-                }
-
-
-                return resultArray;
+                arrLength = arr.length;
             }
-            else if (arr.length < 12)
+
+            String[] resultArray = new String[arrLength];
+
+            for (int i = 0; i < arrLength; i++)
             {
-                String[] resultArray = new String[arr.length];
-
-                for (int i = 0; i < arr.length; i++)
-                {
-                    resultArray[i] = arr[i][0];
-                }
-
-                return resultArray;
+                resultArray[i] = arr[i][0];
             }
+
+            return resultArray;
         }
 
         return new String[0];
     }
 
     public static void main(String[] args) {
-       // Trie trie = new Trie();
-
 
         String symbols = "abcdefghijklmnopqrtufwvxsz1234567890";
 
         //Генератор строк
-        String[] arrayString = new String[100000];
+        String[] arrayString = new String[50000];
 
         for (int j = 0; j < arrayString.length; j++)
         {
@@ -134,11 +110,11 @@ public class Main implements ISearcher
         //Генератор long-ов
         Random random = new Random();
 
-        long[] arrayLong = new long[100000];
+        long[] arrayLong = new long[50000];
 
         for (int i = 0; i < arrayLong.length; i++)
         {
-            arrayLong[i] = random.nextLong();
+            arrayLong[i] = Math.abs(random.nextLong());
         }
 
         Main mainClass = new Main();
@@ -146,6 +122,10 @@ public class Main implements ISearcher
 
         long date1 =   System.currentTimeMillis();
         mainClass.refresh(arrayString, arrayLong);
+
+        arrayLong = null;
+        arrayString = null;
+
         long date2 =   System.currentTimeMillis();
 
         System.out.println(date2 - date1);
